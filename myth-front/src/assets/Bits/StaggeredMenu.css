@@ -1,0 +1,231 @@
+/* src/assets/Bits/StaggeredMenu.css
+   Fixed: prelayers behind panel, readable text, sane stacking, GSAP-friendly.
+*/
+/* StaggeredMenu: visible toggle/header but not above the site navbar */
+
+/* Wrapper: fixed at top so the toggle/header area is visible.
+   Keep z-index intentionally lower than the site navbar (which you set very high). */
+.staggered-menu-wrapper {
+  position: absolute;
+  background-color: #FFC857;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 122px;           /* match your NAV_HEIGHT (update if different) */
+  pointer-events: none;   /* allow only header children to receive events */
+  z-index: 300;           /* << your navbar z-index (e.g. 20000) so navbar stays above */
+}
+
+/* Header / toggle: sits inside the wrapper and is visible.
+   It's absolute inside the wrapper (not fixed to viewport), so it won't "follow" scrolling content. */
+.staggered-menu-header {
+  position: absolute;     /* not fixed */
+  top: 0;
+  left: 0;
+  margin-top: 0rem;
+  right: 0;
+  height: 100%;           /* fills the wrapper area so toggle is visible */
+  display: flex;
+  margin-bottom: 4rem;
+  align-items: center;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  justify-content: space-between;
+  padding: 0 1rem;        /* tighter vertical spacing for a nav strip */
+  background: transparent;
+  pointer-events: auto;   /* allow clicks on the toggle and logo */
+  z-index: 301;           /* inside-wrapper stacking (still below site navbar) */
+}
+
+/* Ensure the inner elements can receive pointer events */
+.staggered-menu-header > * { pointer-events: auto; }
+
+/* If you want the toggle to be visually distinct, tweak the button directly */
+.sm-toggle {
+  background: transparent;
+  border: 1px solid rgba(0,0,0,0.08);
+  color: inherit;
+  padding: 10px 14px;
+  border-radius: 6px;
+  pointer-events: auto;
+}
+
+/* Panel (unchanged) — keep it portaled and free to animate */
+.staggered-menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: clamp(260px, 38vw, 420px);
+  transform: translateX(100%);
+  z-index: 1500; /* panel can sit under the navbar but above prelayers */
+}
+
+/* Logo */
+.sm-logo { display: flex; align-items: center; user-select: none; }
+.sm-logo-img { display: block; height: 102px; width: 102px; width: auto; object-fit: contain; }
+
+/* Toggle button */
+.sm-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: black;
+  border: none;
+  cursor: pointer;
+  color: black;
+  font-weight: 600;
+  line-height: 1;
+  pointer-events: auto;
+  z-index: 4000;
+}
+.sm-toggle:focus-visible {
+  outline: 2px solid rgba(255,255,255,0.14);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Toggle text internals */
+.sm-toggle-textWrap { position: relative; display: inline-block; height: 1em; overflow: hidden; white-space: nowrap; }
+.sm-toggle-textInner { display: flex; flex-direction: column; line-height: 1; }
+.sm-toggle-line { display: block; height: 1em; line-height: 1; }
+
+/* icon lines */
+.sm-icon { position: relative; width: 14px; height: 14px; display: inline-flex; align-items: center; justify-content: center; }
+.sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); }
+
+/* Prelayer stack — decorative. MUST sit behind the panel. */
+.sm-prelayers {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(260px, 38vw, 420px);
+  pointer-events: none;
+  z-index: 2500; /* BELOW the panel */
+}
+[data-position='left'] .sm-prelayers { left: 0; right: auto; }
+.sm-prelayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  pointer-events: none;
+  /* keep visible but behind panel */
+}
+
+/* Panel overlay — above prelayers, readable content */
+.staggered-menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  margin-right: 26rem;
+  width: clamp(260px, 38vw, 420px);
+  transform: translateX(100%); /* fallback: hidden offscreen */
+  transition: transform 0.36s cubic-bezier(.2,.9,.2,1);
+  z-index: 1500; /* higher than prelayers but lower than toggle */
+  pointer-events: auto;
+  box-shadow: 0 24px 64px rgba(2,6,23,0.6);
+  background: #ffffff; /* solid background so decorative layers don't show through */
+  color: #0b0b0b;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  overflow-y: auto;
+}
+
+/* Left variant fallback */
+[data-position='left'] .staggered-menu-panel {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+}
+
+/* When wrapper marks data-open (fallback), allow CSS to bring it in */
+.staggered-menu-wrapper[data-open='true'] .staggered-menu-panel {
+  transform: translateX(0);
+}
+
+/* ensure prelayers never steal events */
+.sm-prelayers, .sm-prelayer { pointer-events: none !important; }
+
+/* Panel internals — ensure content sits above any decorative layers */
+.sm-panel-inner {
+  position: relative;
+  z-index: 1000; /* content above panel background and prelayers */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 3.5rem 2rem;
+  box-sizing: border-box;
+  pointer-events: auto;
+  color: #0b0b0b;
+}
+
+/* Title (if used) */
+.sm-panel-title { margin: 0; font-size: 1rem; font-weight: 700; color: #111; text-transform: uppercase; }
+
+/* Panel item list */
+.sm-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
+.sm-panel-item {
+  display: inline-block;
+  text-decoration: none;
+  color:  #b1520a;
+  font-weight: 700;
+  font-size: 2.25rem; /* readable but not monstrous */
+  cursor: pointer;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  transition: color .18s ease;
+  padding-right: 1.2rem;
+}
+.sm-panel-item:hover { color: var(--sm-accent,  #0b0b0b); }
+.sm-panel-item a { color: inherit; text-decoration: none; display: inline-block; pointer-events: auto; }
+
+/* numbering */
+.sm-panel-list[data-numbering] { counter-reset: smItem; }
+.sm-panel-list[data-numbering] .sm-panel-item::after {
+  counter-increment: smItem;
+  content: counter(smItem, decimal-leading-zero);
+  position: absolute;
+  top: 0.1em;
+  right: 2.1rem;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--sm-accent, rgb(242, 164, 47));
+  pointer-events: none;
+  opacity: var(--sm-num-opacity, 0);
+}
+
+/* socials area */
+.sm-socials { margin-top: auto; padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.sm-socials-title { margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--sm-accent, rgb(242, 164, 47)); }
+.sm-socials-list { list-style: none; margin: 0; padding: 0; display: flex; gap: 1rem; flex-wrap: wrap; }
+.sm-socials-link { text-decoration: none; color: #111; font-weight: 600; font-size: 1rem; pointer-events: auto; transition: color .18s ease; }
+.sm-socials-link:hover { color: var(--sm-accent, #b1520a); }
+
+/* small label used during animation */
+.sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
+
+/* responsive behavior */
+@media (max-width: 1024px) {
+  .staggered-menu-panel { width: 100%; left: 0; right: 0; transform: translateX(100%); }
+  [data-position='left'] .staggered-menu-panel { transform: translateX(-100%); }
+  .staggered-menu-header { padding: 1rem; }
+}
+
+/* focus / accessibility */
+.sm-toggle:focus-visible { outline: 2px solid rgba(255,255,255,0.12); outline-offset: 4px; }
+.sm-socials-link:focus-visible { outline: 2px solid var(--sm-accent, #5227ff); outline-offset: 3px; }
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .staggered-menu-panel,
+  .sm-toggle,
+  .sm-prelayer { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,47 @@
+.card-spotlight {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  background-color: #111;   /* dark base */
+  color: #f9f9f9 !important;           /* light text so it shows */
+  padding: 2rem;
+  overflow: hidden;
+
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(255, 255, 255, 0.08);
+}
+
+.card-spotlight h1,
+.card-spotlight h2,
+.card-spotlight h3,
+.card-spotlight h4,
+.card-spotlight h5,
+.card-spotlight h6 {
+  color: #fff; /* force white for headings */
+}
+
+.card-spotlight p,
+.card-spotlight small,
+.card-spotlight span {
+  color: #ddd; /* softer gray for body text */
+}
+
+
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.card-spotlight:hover::before,
+.card-spotlight:focus-within::before {
+  opacity: 0.6;
+}
