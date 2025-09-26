@@ -294,7 +294,7 @@ export default function MythPage() {
   }
 
   const SmallMeta = ({ children }) => (
-    <small className="text-muted">{children}</small>
+    <small className="text-muted d-block">{children}</small>
   );
 
   const LoadingSkeleton = ({ lines = 4 }) => (
@@ -349,27 +349,28 @@ export default function MythPage() {
         ) : (
           <div className="row g-4">
             {filteredThemeMyths.map((m) => (
-              <div key={m.id} className="col-12 col-sm-6 col-md-4 col-lg-4">
+              <div key={m.id} className="col-8 col-sm-6 col-md-4">
                 <article
-                  className="card h-100 border-0 shadow-sm rounded-3 overflow-hidden"
+                  className="card col-3 col-sm-12 col-lg-12 col-md-12 h-100 border-0 shadow-sm rounded-3 overflow-hidden"
                   onClick={() => navigate(`/myth/${m.id}`)}
                   style={{ cursor: "pointer" }}
                 >
                   <TiltedCard
-  imageSrc={m.imageUrl || "https://placehold.co/600x400?text=No+Image"}
-  altText={m.title}
-  captionText={m.title}
-    containerHeight="420px"
-  containerWidth="100%"
-  imageHeight="95%"
-  imageWidth="100%"        // always stretch to full width
-/>
+                    imageSrc={m.imageUrl || "https://placehold.co/600x400?text=No+Image"}
+                    altText={m.title}
+                    captionText={m.title}
+                    containerHeight="320px"
+                    containerWidth="100%"
+                    imageHeight="100%"
+                    imageWidth="90%"
+                  />
 
                   <div className="card-body py-3">
-                    <h6 className="fw-semibold mb-1">{m.title}</h6>
+                    <h6 className="fw-semibold mb-1 text-truncate">{m.title}</h6>
                     <p
                       className="mb-0 small text-muted text-truncate"
                       title={m.summary}
+                      style={{ maxWidth: "100%" }}
                     >
                       {m.summary}
                     </p>
@@ -385,8 +386,8 @@ export default function MythPage() {
 
   return (
     <div className="container my-5">
-      <div className="myth-main-row">
-        <main>
+      <div className="row">
+        <main className="col-12">
           <div className="card shadow-sm border-0 rounded-3 mb-4">
             <div className="card-body p-4">
               {loadingMyth ? (
@@ -397,12 +398,12 @@ export default function MythPage() {
                 </div>
               ) : myth ? (
                 <>
-                  <div className="d-flex justify-content-between align-items-start mb-4">
-                    <div>
+                  <div className="d-flex justify-content-between align-items-start mb-4 flex-wrap">
+                    <div className="me-2">
                       <h2 className="fw-bold mb-1">✦ {myth.title} ✦</h2>
                       <SmallMeta>{myth.tradition}</SmallMeta>
                     </div>
-                    <div className="d-flex gap-2">
+                    <div className="d-flex gap-2 mt-2 mt-sm-0">
                       <button
                         type="button"
                         className="btn btn-outline-secondary btn-sm"
@@ -422,15 +423,11 @@ export default function MythPage() {
                     </div>
                   </div>
 
-                  <div className="d-flex justify-content-center mb-4">
-                    <div
-                      className="myth-hero-deck w-100"
-                      style={{ maxWidth: 980, width: "100%" }}
-                    >
-                      <div
-                        className="card shadow-sm mb-3 overflow-visible"
-                        style={{ border: "0", borderRadius: 12 }}
-                      >
+                  {/* HERO + SUMMARY (responsive) */}
+                  <div className="row g-3 align-items-start justify-content-center ">
+                    {/* Image column */}
+                    <div className="col-12 col-lg-7">
+                      <div className="card shadow-sm overflow-visible" style={{ border: 0, borderRadius: 12 }}>
                         <div className="card-body p-0" style={{ overflow: "visible" }}>
                           <div className="tilted-wrapper" style={{ overflow: "visible" }}>
                             <TiltedCard
@@ -439,38 +436,34 @@ export default function MythPage() {
                               captionText={`${myth.title} — ${myth.tradition || "Unknown"}`}
                               containerHeight="520px"
                               containerWidth="100%"
-                              imageHeight="480px"
+                              imageHeight="100%"
                               imageWidth="100%"
                               rotateAmplitude={6}
                               scaleOnHover={1.03}
                               showMobileWarning={false}
                               showTooltip={true}
                               displayOverlayContent={true}
-                              overlayContent={
-                                <div className="overlay-content p-3">
-                                  <strong className="d-block mb-2">Snapshot</strong>
-                                  <p className="mb-0 text-muted" style={{ maxHeight: 160, overflowY: "auto" }}>
-                                    {myth.summary || "No summary available."}
-                                  </p>
-                                </div>
-                              }
                             />
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div className="card-deck d-flex gap-3">
-                        <div className="card flex-grow-1 border-0 shadow-sm rounded-3 p-3" style={{ background: "#fffaf3" }}>
+                    {/* Right column: summary + tags + details */}
+                    <div className="col-12 col-lg-5">
+                      <div className="d-flex flex-column h-100 gap-3">
+                        <div className="card border-0 shadow-sm rounded-3 p-3" style={{ background: "#fffaf3" }}>
                           <h6 className="mb-2">Summary</h6>
-                          <p className="mb-2 text-muted" style={{ maxHeight: 180, overflowY: "auto" }}>
+                          <div className="mb-2 text-muted" style={{ maxHeight: 220, overflowY: "auto", minHeight: 64 }}>
                             {myth.summary || "No summary available."}
-                          </p>
+                          </div>
 
                           <div className="mt-2 d-flex flex-wrap gap-2">
                             {(myth.tags || []).slice(0, 8).map((t, idx) => (
-                              <span
+                              <button
                                 key={t + idx}
-                                className="tag-pill"
+                                type="button"
+                                className="btn btn-sm btn-outline-info"
                                 onClick={() => {
                                   try {
                                     navigate?.(`/tags/${encodeURIComponent(t)}`);
@@ -478,12 +471,12 @@ export default function MythPage() {
                                 }}
                               >
                                 #{t}
-                              </span>
+                              </button>
                             ))}
                           </div>
                         </div>
 
-                        <aside className="card card-side flex-shrink-0 border-0 shadow-sm rounded-3 p-3" style={{ minWidth: 220 }}>
+                        <div className="card border-0 shadow-sm rounded-3 p-3">
                           <div className="small text-muted">Details</div>
                           <div className="fw-semibold my-1">{myth.tradition || "Unknown tradition"}</div>
                           <div className="text-muted small mb-2">{myth.themes ? myth.themes.join(", ") : "—"}</div>
@@ -510,7 +503,7 @@ export default function MythPage() {
                               ↗ Share
                             </a>
                           </div>
-                        </aside>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -529,11 +522,10 @@ export default function MythPage() {
             ) : suggestedParallels.length === 0 ? (
               <div className="text-muted small fst-italic">No suggestions yet.</div>
             ) : (
-              <div className="parallels-bleed">
-                <div className="parallels-inner d-flex flex-wrap gap-3">
-                  {suggestedParallels.map((p, i) => (
+              <div className="row g-3">
+                {suggestedParallels.map((p, i) => (
+                  <div key={(p?.myth?.id ?? p?.id) || i} className="col-12 col-sm-6 col-md-4">
                     <ParallelCard
-                      key={(p?.myth?.id ?? p?.id) || i}
                       p={p}
                       currentId={currentMythId}
                       onAccepted={handleAccepted}
@@ -542,23 +534,22 @@ export default function MythPage() {
                         if (m?.id) navigate(`/myth/${m.id}`);
                       }}
                     />
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
 
-          {/* Accepted parallels with background */}
-          <div style={{ background: "#f9fafb", padding: "1rem", borderRadius: 12 }}>
+          {/* Accepted parallels */}
+          <div className="mb-5">
             <h5 className="fw-semibold mb-3">Accepted Parallels</h5>
             {acceptedParallels.length === 0 ? (
               <div className="text-muted small fst-italic">No accepted parallels yet.</div>
             ) : (
-              <div className="parallels-bleed">
-                <div className="parallels-inner d-flex flex-wrap gap-3">
-                  {acceptedParallels.map((p, i) => (
+              <div className="row g-3">
+                {acceptedParallels.map((p, i) => (
+                  <div key={(p?.myth?.id ?? p?.id) || i} className="col-12 col-sm-6 col-md-4">
                     <ParallelCard
-                      key={(p?.myth?.id ?? p?.id) || i}
                       p={p}
                       currentId={currentMythId}
                       accepted={true}
@@ -566,8 +557,8 @@ export default function MythPage() {
                         if (m?.id) navigate(`/myth/${m.id}`);
                       }}
                     />
-                  ))}
-                </div>
+                  </div>
+                ))}
               </div>
             )}
           </div>
@@ -575,38 +566,43 @@ export default function MythPage() {
       </div>
 
       <style>{`
+        /* keep tilt overlay content visible but responsive */
         .tilted-wrapper .overlay-content,
         .TiltedCard .overlay-content {
           position: relative !important;
           z-index: 32 !important;
-          background: lightblue !important;
-          width: 500px;
-          margin-bottom: 0.5rem;
+          background: rgba(173, 216, 230, 0.9);
+          max-width: 100%;
           border-radius: 8px;
         }
         .tilted-wrapper, .tilted-wrapper .tilt-inner, .tilted-wrapper .tilt-viewport, .TiltedCard, .TiltedCard .tilt-inner {
           overflow: visible !important;
         }
-        .myth-hero-deck .tilted-wrapper img {
+        .myth-hero-deck .tilted-wrapper img,
+        .tilted-wrapper img,
+        .TiltedCard img {
           width: 100% !important;
-          height: auto !important;
+          height: 100% !important;
           max-height: 520px;
-          object-fit: contain !important;
+          object-fit: cover !important;
         }
+
         @media (max-width: 992px) {
-          .myth-hero-deck .tilted-wrapper img {
-            max-height: 360px;
+          .myth-hero-deck .tilted-wrapper img,
+          .tilted-wrapper img,
+          .TiltedCard img {
+            max-height: 460px;
           }
         }
         @media (max-width: 576px) {
-          .myth-hero-deck .tilted-wrapper img {
-            max-height: 240px;
+          .myth-hero-deck .tilted-wrapper img,
+          .tilted-wrapper img,
+          .TiltedCard img {
+            max-height: 450px;
           }
         }
-        .card-deck { display: flex; gap: 16px; align-items: stretch; }
-        .card-side { display: flex; flex-direction: column; justify-content: space-between; }
 
-        /* Tag pill restyle */
+        /* Tag pill restyle (fallback) */
         .tag-pill {
           display: inline-block;
           background: #e0f2fe;

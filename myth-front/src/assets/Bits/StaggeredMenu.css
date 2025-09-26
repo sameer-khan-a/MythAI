@@ -122,7 +122,10 @@
   top: 0;
   right: 0;
   height: 100vh;
+
+  /* Default margin-right for medium-ish screens */
   margin-right: 26rem;
+
   width: clamp(260px, 38vw, 420px);
   transform: translateX(100%); /* fallback: hidden offscreen */
   transition: transform 0.36s cubic-bezier(.2,.9,.2,1);
@@ -134,6 +137,27 @@
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   overflow-y: auto;
+}
+
+/* Larger screens — push panel further in */
+@media (min-width: 1200px) {
+  .staggered-menu-panel {
+    margin-right: 26rem;
+  }
+}
+
+/* Small screens — tighter margin so panel fits better */
+@media (max-width: 900px) {
+  .staggered-menu-panel {
+    margin-right: 20rem;
+  }
+}
+
+/* Extra small screens — minimal margin so it doesn’t break layout */
+@media (max-width: 600px) {
+  .staggered-menu-panel {
+    margin-right: 30rem;
+  }
 }
 
 /* Left variant fallback */
@@ -214,7 +238,7 @@
 
 /* responsive behavior */
 @media (max-width: 1024px) {
-  .staggered-menu-panel { width: 100%; left: 0; right: 0; transform: translateX(100%); }
+  .staggered-menu-panel { width: 100%; left: 0; right: 30; transform: translateX(100%); }
   [data-position='left'] .staggered-menu-panel { transform: translateX(-100%); }
   .staggered-menu-header { padding: 1rem; }
 }

@@ -1,7 +1,9 @@
-// server.js
+// server.js — improved (themes routes preserved)
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 const natural = require('natural');
 
@@ -11,11 +13,26 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
+  // optionally: max, idleTimeoutMillis
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected PG client error', err);
 });
 
 const app = express();
+app.use(helmet());
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '250kb' })); // avoid huge payloads
+
+// basic rate limiter (tune as needed)
+const limiter = rateLimit({
+  windowMs: 10 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
 
 // Global error logging
 process.on('unhandledRejection', (reason, p) => {
@@ -36,14 +53,25 @@ const STOPWORDS = new Set([
   'the','and','for','a','an','of','in','on','to','is','are','that','this','with','as','by','from','it','its','be','was','were','which','or','but'
 ]);
 
+const ENTITY_STOPWORDS = new Set([
+  'jesus', 'christ', 'moses', 'krishna', 'buddha', 'zeus', 'apollo'
+]);
+
 function normalizeTags(tags) {
   if (!tags) return '';
   if (Array.isArray(tags)) return tags.join(' ');
   if (typeof tags === 'string') {
     const s = tags.trim();
-    if ((s.startsWith('[') && s.endsWith(']')) || (s.startsWith('"') && s.endsWith('"'))) {
-      try { const parsed = JSON.parse(s); return Array.isArray(parsed) ? parsed.join(' ') : s; } catch {}
+    // JSON array
+    if (s.startsWith('[') && s.endsWith(']')) {
+      try {
+        const parsed = JSON.parse(s);
+        return Array.isArray(parsed) ? parsed.join(' ') : s;
+      } catch (e) {
+        // fallback to heuristics below
+      }
     }
+    // object-like {a,b}
     if (s.startsWith('{') && s.endsWith('}')) {
       return s.slice(1, -1).split(',').map(t => t.replace(/^"|"$/g, '').trim()).join(' ');
     }
@@ -51,10 +79,6 @@ function normalizeTags(tags) {
   }
   return String(tags);
 }
-
-const ENTITY_STOPWORDS = new Set([
-  'jesus', 'christ', 'moses', 'krishna', 'buddha', 'zeus', 'apollo'
-]);
 
 function preprocessToTokens(text) {
   if (!text) return [];
@@ -77,14 +101,20 @@ function preprocessToString(text) {
   return preprocessToTokens(text).join(' ');
 }
 
-/**
- * Build a document string for a myth row.
- * Includes: title (boosted), summary, content, and tags
- */
+/* ---------------------- Document builder + in-memory cache ---------------------- */
+
+// clamp content parts to avoid huge TF-IDF documents
+const MAX_CHARS_PER_PART = 2000;
+
+function safeSlice(s, max) {
+  if (!s) return '';
+  return s.length > max ? s.slice(0, max) : s;
+}
+
 function buildDocForRow(row, opts = { titleBoost: 2 }) {
   const title = String(row.title || '');
-  const summary = String(row.summary || '');
-  const content = String(row.content || '');
+  const summary = safeSlice(String(row.summary || ''), MAX_CHARS_PER_PART);
+  const content = safeSlice(String(row.content || ''), MAX_CHARS_PER_PART);
   const tags = normalizeTags(row.tags || '');
 
   const titlePart = Array(Math.max(1, opts.titleBoost))
@@ -97,10 +127,9 @@ function buildDocForRow(row, opts = { titleBoost: 2 }) {
   return `${titlePart} ${summaryPart} ${contentPart} ${tagPart}`.trim();
 }
 
-/* optional in-memory cache to avoid re-querying and rebuilding docs on every request */
 const SUGGEST_CACHE = {
   value: null,
-  ttlMs: 1000 * 60 * 5 // 5 minutes cache
+  ttlMs: 1000 * 60 * 5 // 5 minutes
 };
 
 async function buildOrGetCache(opts = { titleBoost: 2 }) {
@@ -133,8 +162,25 @@ async function buildOrGetCache(opts = { titleBoost: 2 }) {
   return value;
 }
 
+/* ---------------------- Health/Admin ---------------------- */
 
-/* ---------------------- Basic routes (unchanged) ---------------------- */
+app.get('/health', (req, res) => {
+  res.json({ ok: true, db: !!pool ? 'connected' : 'unknown', ts: Date.now() });
+});
+
+// admin: rebuild cache (useful after inserts); in prod protect this route
+app.post('/admin/rebuild-suggest-cache', async (req, res) => {
+  try {
+    SUGGEST_CACHE.value = null;
+    const cache = await buildOrGetCache();
+    res.json({ rebuilt: true, docs: cache.docs.length });
+  } catch (err) {
+    console.error('rebuild cache err', err);
+    res.status(500).json({ error: 'rebuild failed' });
+  }
+});
+
+/* ---------------------- Basic routes (preserved) ---------------------- */
 
 app.get('/api/myths/next', async (req, res) => {
   const currentId = Number(req.query.currentId);
@@ -227,15 +273,6 @@ app.get('/api/sites', async (req, res) => {
     res.status(500).json({ error: 'db error' });
   }
 });
-
-/* ---------------------- Parallels: suggestions (semantic, cross-corpus) ---------------------- */
-/**
- * Design goals:
- * - Semantic similarity using TF-IDF + cosine
- * - Exclude already-accepted parallels (parallels table)
- * - Penalize trivial title-overlap matches (so Moses doesn't hog suggestions)
- * - Return normalized objects frontend expects: { score, myth: {id,title,summary,tags,imageUrl,tradition,themes} }
- */
 app.post('/api/parallels/suggest', async (req, res) => {
   try {
     const { mythId } = req.body;
@@ -243,29 +280,71 @@ app.post('/api/parallels/suggest', async (req, res) => {
     const numericId = Number(mythId);
     if (!Number.isFinite(numericId)) return res.status(400).json({ error: 'invalid mythId' });
 
-    // tuning params you can tweak
-    const TITLE_BOOST = 3;   // repeat title to bias importance
-    const MIN_SCORE = 0.035; // baseline similarity cutoff (tune 0.02 - 0.06)
+    // tuning params
+    const TITLE_BOOST = 3;
+    const MIN_SCORE = 0.035;
     const TOP_K = 12;
-    const TITLE_PENALTY_MULT = 0.6; // multiply score when only title overlaps (weak similarity)
+    const TITLE_PENALTY_MULT = 0.6;
 
-    // Build or reuse cache (docs + rows)
     const cache = await buildOrGetCache({ titleBoost: TITLE_BOOST });
 
-    // fetch source myth row
     const src = cache.idToRow.get(numericId);
     if (!src) return res.status(404).json({ error: 'source myth not found' });
     const sourceRow = src.row;
+
+    // helper: normalize themes to array of lowercase strings
+    function extractThemes(row) {
+      try {
+        if (!row) return [];
+        const t = row.themes;
+        if (!t) return [];
+        if (Array.isArray(t)) return t.map(x => String(x).toLowerCase());
+        if (typeof t === 'string') {
+          const s = t.trim();
+          if (s.startsWith('[')) {
+            try {
+              const parsed = JSON.parse(s);
+              if (Array.isArray(parsed)) return parsed.map(x => String(x).toLowerCase());
+            } catch (e) { /* fallthrough */ }
+          }
+          // fallback: try splitting on commas (defensive)
+          return s.split(',').map(x => x.trim().toLowerCase()).filter(Boolean);
+        }
+        // final fallback
+        return [String(t).toLowerCase()];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    const sourceThemes = new Set(extractThemes(sourceRow)); // may be empty
 
     // fetch already-accepted myth_b list for this myth_a to exclude
     const linkedRes = await pool.query('SELECT myth_b FROM parallels WHERE myth_a = $1;', [numericId]);
     const linkedBs = new Set((linkedRes.rows || []).map(r => Number(r.myth_b)).filter(Boolean));
 
-    // Build candidate list: all myths except source and any already-linked
-    const candidates = cache.mythList.filter(m => {
+    // Build candidate list: all myths except source and linked
+    // **New**: if source has themes, only keep candidates that share at least one theme
+    const rawCandidates = cache.mythList.filter(m => {
       const id = Number(m.id);
       return id !== numericId && !linkedBs.has(id);
     });
+
+    let candidates;
+    if (sourceThemes.size > 0) {
+      candidates = rawCandidates.filter(c => {
+        const cThemes = new Set(extractThemes(c));
+        for (const t of cThemes) {
+          if (sourceThemes.has(t)) return true;
+        }
+        return false;
+      });
+      // If theme-restricted pool is empty, fall back to full pool to avoid returning nothing
+      if (!candidates.length) candidates = rawCandidates;
+    } else {
+      // source has no themes — fall back to global candidate set
+      candidates = rawCandidates;
+    }
 
     if (!candidates.length) return res.json([]);
 
@@ -305,7 +384,6 @@ app.post('/api/parallels/suggest', async (req, res) => {
     const targetMap = termMaps[0];
     const scored = [];
 
-    // Precompute token sets for title overlap detection (stemmed)
     const sourceTitleTokens = new Set(preprocessToTokens(sourceRow.title || ''));
 
     for (let i = 0; i < candidates.length; i++) {
@@ -313,26 +391,18 @@ app.post('/api/parallels/suggest', async (req, res) => {
       const map = termMaps[i + 1];
       let score = cosine(targetMap, map);
 
-      // Weak-title-only penalty:
-      // if candidate title shares tokens with source title but overall semantic score is low,
-      // apply a penalty to reduce trivial same-name matches.
       const candTitleTokens = new Set(preprocessToTokens(cand.title || ''));
       let sharedTitleCount = 0;
       for (const t of candTitleTokens) if (sourceTitleTokens.has(t)) sharedTitleCount++;
       if (sharedTitleCount > 0) {
-        // small heuristic: if shared title tokens exist but score is lowish, penalize
-        const penaltyThreshold = 0.08; // if semantic score below this, consider it weak
+        const penaltyThreshold = 0.08;
         if (score < penaltyThreshold) {
           score = score * TITLE_PENALTY_MULT;
-        } else {
-          // if semantic score is strong despite title overlap, keep it (no penalty)
         }
       }
 
-      // Extra guard: avoid identical short-title matches (e.g., same single-name myths)
-      // if titles are nearly identical (after tokenize) and score is extremely low, skip
       if (sharedTitleCount > 0 && score < (MIN_SCORE * 0.5)) {
-        continue; // skip this trivial match
+        continue;
       }
 
       if (score && score > 0) {
@@ -343,12 +413,11 @@ app.post('/api/parallels/suggest', async (req, res) => {
     scored.sort((a, b) => b.score - a.score);
     const top = scored.filter(s => s.score >= MIN_SCORE).slice(0, TOP_K);
 
-    // Normalize response shape to what frontend expects
     const out = top.map(s => {
       const m = s.myth;
       const tags = Array.isArray(m.tags) ? m.tags
         : (typeof m.tags === 'string' && m.tags.trim().startsWith('[') ? JSON.parse(m.tags) : (typeof m.tags === 'string' ? normalizeTags(m.tags).split(' ').filter(Boolean) : []));
-      const themes = Array.isArray(m.themes) ? m.themes : [];
+      const themes = Array.isArray(m.themes) ? m.themes : (typeof m.themes === 'string' ? (m.themes.trim().startsWith('[') ? JSON.parse(m.themes) : normalizeTags(m.themes).split(',').map(x => x.trim()).filter(Boolean)) : []);
       return {
         score: s.score,
         myth: {
@@ -357,7 +426,7 @@ app.post('/api/parallels/suggest', async (req, res) => {
           tradition: m.tradition || null,
           summary: m.summary || null,
           tags,
-          imageUrl: m.imageUrl || null,
+          imageUrl: m.imageurl || m.imageUrl || null,
           themes
         }
       };
@@ -490,7 +559,8 @@ app.post('/api/parallels', async (req, res) => {
   }
 });
 
-/* ---------------------- Themes endpoints ---------------------- */
+/* ---------------------- Themes endpoints (kept intact) ---------------------- */
+
 app.get('/api/themes', async (req, res) => {
   try {
     const q = `
@@ -556,6 +626,23 @@ app.get('/api/myths/:id/themes', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+/* ---------------------- Server boot & graceful shutdown ---------------------- */
 
+const PORT = process.env.PORT || 4000;
+const server = app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+function shutdown(signal) {
+  console.log('Received', signal, 'shutting down gracefully...');
+  server.close(async () => {
+    try {
+      await pool.end();
+      console.log('Pool ended, exiting.');
+      process.exit(0);
+    } catch (e) {
+      console.error('Error during pool.end', e);
+      process.exit(1);
+    }
+  });
+}
+process.on('SIGINT', () => shutdown('SIGINT'));
+process.on('SIGTERM', () => shutdown('SIGTERM'));

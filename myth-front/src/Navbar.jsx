@@ -9,21 +9,19 @@ const menuItems = [
   { label: "Contact", link: "/contact", ariaLabel: "Reach out and share your thoughts" }
 ];
 
-
+// ✅ Socials updated: GitHub + Archive + Email
 const socialItems = [
-  { label: "Twitter", link: "https://twitter.com" },
-  { label: "GitHub", link: "https://github.com" },
-  { label: "LinkedIn", link: "https://linkedin.com" }
+  { label: "GitHub", link: "https://github.com/sameer-khan-a/MythAI.git" },
+  { label: "Archive Hub", link: "/archive" },
+  { label: "Email", link: "mailto:sameerkhan2003a@gmail.com" }
 ];
 
 export default function Navbar() {
-  // client-only menu render to avoid SSR mismatch
   const [mounted, setMounted] = useState(false);
   const menuRef = useRef(null);
 
   useEffect(() => setMounted(true), []);
 
-  // NEW: after mount, force the menu toggle button to show "☰ Menu"
   useEffect(() => {
     if (!mounted) return;
     const btn = document.querySelector(
@@ -139,21 +137,12 @@ export default function Navbar() {
     >
       <style>{injectedCss}</style>
 
-      {/* spacer */}
       <div style={{ flex: 1 }} />
 
-      <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <button
-          type="button"
-          aria-label="Open menu"
-          className="navbar-menu-fallback"
-          onClick={triggerInnerToggle}
-        >
-          <span style={{ fontSize: 14, color: "black" }}>☰</span>
-          <span>Menu</span>
-        </button>
+      <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
+      
 
-        <div ref={menuRef} style={{ display: "inline-block" }}>
+        <div ref={menuRef} style={{ display: "inline-block", marginRight: '40rem' }}>
           {mounted && (
             <StaggeredMenu
               className="site-staggered-menu"

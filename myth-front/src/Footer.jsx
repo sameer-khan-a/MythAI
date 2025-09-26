@@ -1,17 +1,12 @@
 // src/components/Footer.jsx
 import React, { useEffect, useState, useRef } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
 
 /**
- * Enhanced Footer (Mythic Edition)
- * - Accessible newsletter form (aria-live)
- * - Rotating micro-quotes for mythic flavor
- * - Myth motif chips
- * - Lazy-loaded logo & images
- * - One-file styling tweaks, Bootstrap layout
- *
- * NOTE: Hook the newsletter POST where noted.
+ * Enhanced Footer (Mythic Edition) — user-updated socials
+ * - GitHub -> https://github.com/sameer-khan-a/MythAI.git
+ * - Replaced Twitter & LinkedIn with Archive (internal) and Email (mailto)
  */
 
 const mythQuotes = [
@@ -34,7 +29,6 @@ const Footer = () => {
   const statusRef = useRef(null);
 
   useEffect(() => {
-    // rotate myth quotes every 6 seconds
     const t = setInterval(() => {
       setQuoteIndex((i) => (i + 1) % mythQuotes.length);
     }, 6000);
@@ -42,10 +36,7 @@ const Footer = () => {
   }, []);
 
   useEffect(() => {
-    // focus the status region if there is an update for screenreaders
-    if (status && statusRef.current) {
-      statusRef.current.focus();
-    }
+    if (status && statusRef.current) statusRef.current.focus();
   }, [status]);
 
   const validateEmail = (value) => /^\S+@\S+\.\S+$/.test(value);
@@ -56,17 +47,7 @@ const Footer = () => {
       setStatus("error");
       return;
     }
-
     setStatus("sending");
-    // TODO: Replace the below with a real API call:
-    // try {
-    //   const resp = await fetch('/api/newsletter', { method: 'POST', body: JSON.stringify({ email }) });
-    //   if (!resp.ok) throw new Error('subscribe-failed');
-    //   setStatus('success');
-    // } catch (err) {
-    //   setStatus('error');
-    // }
-    // Simulate success:
     setTimeout(() => {
       setStatus("success");
       setEmail("");
@@ -75,9 +56,6 @@ const Footer = () => {
   };
 
   const handleMotifClick = (m) => {
-    // UX: shallow navigation to a tag page; adjust to your routing
-    // window.location.href = `/tags/${encodeURIComponent(m)}`;
-    // For now: copy to clipboard as a tiny micro-interaction
     navigator.clipboard?.writeText(m);
     setStatus("success");
     setTimeout(() => setStatus(null), 1400);
@@ -256,14 +234,29 @@ const Footer = () => {
             </div>
 
             <div className="d-flex gap-3 align-items-center mt-3">
-              <a href="https://twitter.com" className="text-muted" aria-label="Twitter">
-                <FaTwitter size={20} />
+              {/* Replaced social icons with useful links */}
+              <a href="/archive" className="text-muted text-decoration-none" aria-label="Archive hub">
+                Archive
               </a>
-              <a href="https://github.com" className="text-muted" aria-label="GitHub">
-                <FaGithub size={20} />
+
+              <a
+                href="https://github.com/sameer-khan-a/MythAI.git"
+                className="text-muted"
+                aria-label="GitHub — MythAI repository"
+                title="GitHub — MythAI"
+                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+              >
+                <FaGithub size={18} />
+                <span className="small text-muted">MythAI</span>
               </a>
-              <a href="https://linkedin.com" className="text-muted" aria-label="LinkedIn">
-                <FaLinkedin size={20} />
+
+              <a
+                href="mailto:sameerkhan2003a@gmail.com"
+                className="text-muted text-decoration-none"
+                aria-label="Email the team"
+                title="Email"
+              >
+                Email
               </a>
 
               <button

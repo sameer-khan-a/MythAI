@@ -133,19 +133,17 @@ export default function ParallelCard({
       <style>{`
         /* ===== Layout & sizing (uniform card heights) ===== */
         .parallel-card-item {
-          flex: 0 0 calc(33.333% - 12px);
-          max-width: calc(33.333% - 12px);
+          max-width: 100%;
           box-sizing: border-box;
           transition: transform 0.15s ease, box-shadow 0.15s ease;
           display: flex;
           flex-direction: column;
-          height: 560px;            /* fixed card height for uniform rows on desktop */
+          max-height: 560px;            /* fixed card height for uniform rows on desktop */
         }
         @media (max-width: 992px) {
           .parallel-card-item {
-            flex: 0 0 calc(50% - 12px);
-            max-width: calc(50% - 12px);
-            height: 520px;          /* slightly shorter on tablet */
+            max-width: 100%;
+            max-height: 520px;          /* slightly shorter on tablet */
           }
         }
         @media (max-width: 576px) {
