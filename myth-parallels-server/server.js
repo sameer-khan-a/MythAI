@@ -47,21 +47,7 @@ const corsOptions = FRONTEND_ORIGIN ? {
   credentials: true,
   optionsSuccessStatus: 200
 } : { origin: false };
-const allowedOrigins = [
-  "http://localhost:3000",
-  "http://localhost:5173", // vite local
-  "https://91b603f6.mythai-byg.pages.dev" // Cloudflare Pages
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin) return callback(null, true); // allow curl/postman
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-    return callback(new Error("Not allowed by CORS: " + origin));
-  }
-}));
+app.use(cors({ origin: "*" }));
 
 app.use(express.json({ limit: '250kb' })); // avoid huge payloads
 
