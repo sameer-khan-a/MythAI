@@ -82,7 +82,7 @@ export default function App() {
 
       <main
         id="maincontent"
-        className="container my-4"
+        className="container my-2"
         style={{
           minHeight: `calc(100vh - ${NAV_HEIGHT + FOOTER_APPROX}px)`,
           paddingTop: 8,
