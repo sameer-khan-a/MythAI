@@ -31,18 +31,10 @@ pool.on('error', (err) => console.error('Unexpected PG client error', err));
 const app = express();
 app.use(helmet());
 
-// allow frontend origin(s)
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  process.env.FRONTEND_ORIGIN // e.g. https://your-cloudflare.pages.dev
-].filter(Boolean);
-
 app.use(cors({
-  origin: function (origin, cb) {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(new Error('Not allowed by CORS: ' + origin));
-  }
+  origin: '*',   // 👈 allows any origin
+ 
+  credentials: false // must be false when origin is '*'
 }));
 
 app.use(express.json({ limit: '250kb' }));
