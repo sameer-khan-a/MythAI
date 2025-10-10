@@ -1,4 +1,4 @@
-// server.js — final Render-ready backend with improved parallels.suggest
+// server.js — Render-ready backend with optional hard-coded proxy to remote backend
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -6,6 +6,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { Pool } = require('pg');
 const natural = require('natural');
+const { createProxyMiddleware } = require('http-proxy-middleware'); // <- added
 
 /* ---------------------- Database config ---------------------- */
 function makePoolConfig() {
@@ -54,6 +55,36 @@ process.on('unhandledRejection', (reason, p) => {
 process.on('uncaughtException', (err) => {
   console.error('UNCAUGHT EXCEPTION', err);
 });
+
+/* ---------------------- Optional proxy config ---------------------- */
+/*
+  Toggle behavior:
+    - PROXY_BACKEND=true  => proxy /api/* to REMOTE_BACKEND
+    - otherwise           => use local /api/* handlers (existing code)
+*/
+const USE_REMOTE = process.env.PROXY_BACKEND === 'true';
+const REMOTE_BACKEND = 'https://mythai-backend.onrender.com';
+
+if (USE_REMOTE) {
+  console.log('Proxying /api ->', REMOTE_BACKEND);
+  app.use('/api', createProxyMiddleware({
+    target: REMOTE_BACKEND,
+    changeOrigin: true,
+    secure: true, // set false in dev only if remote cert issues
+    pathRewrite: { '^/api': '/api' },
+    onProxyReq: (proxyReq, req, res) => {
+      // keep some trace headers if helpful
+      proxyReq.setHeader('X-Forwarded-Host', req.headers.host || 'localhost');
+      proxyReq.setHeader('X-Forwarded-Proto', req.protocol || 'http');
+    },
+    onError: (err, req, res) => {
+      console.error('Proxy error', err);
+      if (!res.headersSent) res.status(502).json({ error: 'bad gateway (proxy error)' });
+    }
+  }));
+} else {
+  console.log('Using local API routes');
+}
 
 /* ---------------------- Utility functions ---------------------- */
 const tokenizer = new natural.WordTokenizer();
