@@ -68,6 +68,7 @@ Backend hosted on Render: [https://mythai-backend.onrender.com  ](https://mythai
 ![Myth AI Screenshot 2](./public/mythAI2.png)  
 ![Myth AI Screenshot 3](./public/mythAI3.png)  
 ![Myth AI Screenshot 4](./public/mythAI4.png)
+![Myth AI Screenshot 4](./public/mythAI5.png)
 
 ## 🙋‍♂️ Contact / Author  
 Sameer Khan — MERN-/AI-ML-curious dev & mythology enthusiast  
