@@ -117,13 +117,13 @@ node server.js
 
 ### 📖 Myth Explorer
 
-![](./Images/MythAI1.png)
+![](./Images/MythAI3.png)
 
 ---
 
 ### 🤖 AI Comparison
 
-![](./Images/MythAI3.png)
+![](./Images/MythAI1.png)
 
 ---
 
