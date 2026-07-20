@@ -148,8 +148,6 @@ node server.js
 - [ ] User authentication
 - [ ] Research dashboards
 - [ ] Advanced search filters
-- [ ] Vector embeddings for semantic similarity
-- [ ] User-contributed mythology database
 - [ ] Bookmark and save myths
 
 ---
