@@ -3,7 +3,7 @@
 > An AI-powered mythology research platform for exploring, comparing, and understanding myths across civilizations through explainable natural language processing.
 
 <p align="center">
-  <img src="./Images/MythAI1.png" alt="Myth AI Hero">
+  <img src="./Images/MythAI2.png" alt="Myth AI Hero">
 </p>
 
 ---
@@ -111,13 +111,13 @@ node server.js
 
 ### 🏠 Home
 
-![](./Images/MythAI1.png)
+![](./Images/MythAI2.png)
 
 ---
 
 ### 📖 Myth Explorer
 
-![](./Images/MythAI2.png)
+![](./Images/MythAI1.png)
 
 ---
 
