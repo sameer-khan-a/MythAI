@@ -126,16 +126,15 @@ node server.js
 ![](./Images/MythAI1.png)
 
 ---
+### 📚 Myth Details
+
+![](./Images/MythAI4.png)
+
+---
 
 ### 🌍 Theme Browser
 
 ![](./Images/MythAI5.png)
-
----
-
-### 📚 Myth Details
-
-![](./Images/MythAI4.png)
 
 ---
 
