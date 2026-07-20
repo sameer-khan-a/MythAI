@@ -1,75 +1,181 @@
 # Myth AI
 
-A world-mythology research and analysis platform by Sameer Khan — designed for discovering, comparing, and understanding parallel myths across ancient cultures through explainable AI and linguistic analysis.
+> An AI-powered mythology research platform for exploring, comparing, and understanding myths across civilizations through explainable natural language processing.
 
-## 🚀 What is Myth AI
-MythAI is a full-stack PERN web app built to explore and compare global mythologies.
-It serves as a research platform where users can analyze myths, discover narrative parallels using NLP-based similarity scoring, and browse themes or traditions across cultures.
-Insightful, explainable, and data-driven — combining linguistic analysis with human-curated mythology for historians, educators, and enthusiasts.
+<p align="center">
+  <img src="./Images/MythAI1.png" alt="Myth AI Hero">
+</p>
 
-## 🧰 Tech Stack  
-- **Frontend:** React (hosted on Cloudflare Pages)  
-- **Styling / UI components:** Custom minimal UI with Bootstrap & modern theming  
-- **Routing:** React Router for navigating myths, themes, and parallels  
-- **NLP / Similarity Engine:** TF-IDF + cosine similarity via the `natural` library  
-- **Deployment:** Cloudflare Pages (frontend) + Render (backend)  
-- **Backend / API:** Node.js + Express with PostgreSQL for myth, theme, and parallel data  
+---
 
+## 🏛️ Overview
 
-## 🛠️ Setup & Run Locally  
+Myth AI is a full-stack web application designed to explore and compare mythologies from cultures around the world. Built as a research-oriented platform, it combines human-curated mythology with explainable AI techniques to identify narrative similarities, recurring themes, and cross-cultural connections.
+
+Using **TF-IDF** and **Cosine Similarity**, the platform analyzes mythological texts to suggest related stories while providing users with an intuitive interface for discovering myths, themes, and cultural traditions.
+
+Whether you're a student, researcher, educator, or mythology enthusiast, Myth AI offers a modern and data-driven way to study the stories that have shaped civilizations.
+
+---
+
+## ✨ Highlights
+
+- 🌍 Explore myths from civilizations around the world
+- 🤖 AI-powered myth comparison using NLP
+- 📖 Detailed mythology exploration pages
+- 🧠 TF-IDF and Cosine Similarity recommendation engine
+- 🔎 Discover recurring themes and narrative parallels
+- 📚 Human-curated mythology database
+- ⚡ Fast and responsive interface
+- 📱 Fully responsive design
+- 🎨 Clean and modern user experience
+- 🚀 Cloud-based deployment
+
+---
+
+## 🚀 Tech Stack
+
+| Category | Technologies |
+|----------|--------------|
+| Frontend | React |
+| Backend | Node.js, Express.js |
+| Database | PostgreSQL |
+| NLP Engine | Natural (TF-IDF & Cosine Similarity) |
+| Routing | React Router |
+| Styling | Bootstrap 5, CSS3 |
+| Deployment | Cloudflare Pages, Render |
+| Language | JavaScript (ES6+) |
+
+---
+
+## 📂 Project Structure
+
+```text
+MythAI
+├── backend
+│   ├── routes
+│   ├── controllers
+│   ├── utils
+│   └── server.js
+├── frontend
+│   ├── components
+│   ├── pages
+│   ├── utils
+│   └── src
+└── README.md
+```
+
+---
+
+## ⚡ Getting Started
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/sameer-khan-a/MythAI.git
+```
+
+### Navigate into the project
+
+```bash
 cd MythAI
+```
+
+### Install dependencies
+
+```bash
 npm install
-npx nodemon server.js    # or node server.js for production
-
 ```
 
-## 🧭 Project Structure  (example / your layout might vary)
+### Start the development server
 
-```
-/backend          → Express server and API routes  
-/frontend         → React client app  
-  /components     → Myth cards, comparison views, and layout components  
-  /pages          → Myth listings, theme browser, and parallel explorer  
-  /utils          → similarity helpers, API handlers, and cache logic  
-  App.js / index.js  
-package.json  
-README.md  
+```bash
+npx nodemon server.js
+
+# or
+
+node server.js
 ```
 
-## ✅ Features  
-- Fully responsive UI (mobile → desktop)  
-- Myth exploration and detail pages  
-- Parallel suggestion and comparison engine using NLP  
-- Clean, readable component structure with modern UI design  
-- Easily extensible for future features (vector search, user accounts, etc.)  
+---
 
+## 🌐 Live Demo
 
-## 🚧 Roadmap / To-Do  
-- Add user authentication & authorization (for researchers or contributors)  
-- Expand backend capabilities with Node.js + Express + PostgreSQL  
-- Role-based dashboards (for managing myths, themes, and parallel data)  
- 
+**Frontend:** https://mythai-byg.pages.dev/
 
-## 🧪 Testing  
-Testing is *not yet* configured. Plans: add unit / UI tests once logic grows.  
+**Backend API:** https://mythai-backend.onrender.com/
 
-## 📦 Deployment  
-**Live preview / demo:** [https://mythai.pages.dev ](https://mythai-byg.pages.dev/) 
-Frontend hosted on Cloudflare Pages.  
-Backend hosted on Render: [https://mythai-backend.onrender.com  ](https://mythai-backend.onrender.com)
+---
 
+## 📸 Screenshots
 
-## 📸 Snapshots / Preview
+### 🏠 Home
 
-![Myth AI Screenshot 1](./Images/MythAI1.png)  
-![Myth AI Screenshot 2](./Images/MythAI2.png)  
-![Myth AI Screenshot 3](./Images/MythAI3.png)  
-![Myth AI Screenshot 4](./Images/MythAI4.png)
-![Myth AI Screenshot 5](./Images/MythAI5.png)
+![](./Images/MythAI1.png)
 
-## 🙋‍♂️ Contact / Author  
-Sameer Khan — MERN-/AI-ML-curious dev & mythology enthusiast  
-- GitHub: [sameer-khan-a](https://github.com/sameer-khan-a)  
+---
+
+### 📖 Myth Explorer
+
+![](./Images/MythAI2.png)
+
+---
+
+### 🤖 AI Comparison
+
+![](./Images/MythAI3.png)
+
+---
+
+### 🌍 Theme Browser
+
+![](./Images/MythAI4.png)
+
+---
+
+### 📚 Myth Details
+
+![](./Images/MythAI5.png)
+
+---
+
+## 🛣️ Roadmap
+
+- [x] Myth exploration platform
+- [x] AI-powered similarity engine
+- [x] TF-IDF & Cosine Similarity analysis
+- [x] Responsive interface
+- [x] Cloud deployment
+- [ ] User authentication
+- [ ] Research dashboards
+- [ ] Advanced search filters
+- [ ] Vector embeddings for semantic similarity
+- [ ] User-contributed mythology database
+- [ ] Bookmark and save myths
+
+---
+
+## 💡 Why Myth AI?
+
+Most mythology websites function as digital encyclopedias, presenting stories in isolation. **Myth AI** takes a different approach by combining mythology with natural language processing to uncover relationships between narratives across cultures.
+
+By leveraging explainable AI techniques alongside curated historical content, the platform enables users to discover recurring archetypes, shared motifs, and cultural parallels through an interactive and research-focused experience.
+
+---
+
+## 🤝 Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+1. Fork the repository.
+2. Create a new feature branch.
+3. Commit your changes.
+4. Open a Pull Request.
+
+---
+
+## 👨‍💻 Author
+
+**Sameer Khan**
+
+If you found this project interesting, consider giving it a ⭐ to support its development.
