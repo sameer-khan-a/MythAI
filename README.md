@@ -129,13 +129,13 @@ node server.js
 
 ### 🌍 Theme Browser
 
-![](./Images/MythAI4.png)
+![](./Images/MythAI5.png)
 
 ---
 
 ### 📚 Myth Details
 
-![](./Images/MythAI5.png)
+![](./Images/MythAI4.png)
 
 ---
 
