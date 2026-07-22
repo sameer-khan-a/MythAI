@@ -273,13 +273,33 @@ app.get('/api/sites', async (req, res) => {
 app.get('/api/themes', async (req, res) => {
   try {
     const { rows } = await pool.query(`
-      SELECT th.id, th.name, COALESCE(NULLIF(TRIM(th.slug), ''), lower(th.name)) AS slug, th.description,
-             COUNT(mt.myth_id) AS myth_count
-      FROM themes th LEFT JOIN myth_themes mt ON mt.theme_id = th.id
+      SELECT
+        th.id,
+        th.name,
+        COALESCE(NULLIF(TRIM(th.slug), ''), lower(th.name)) AS slug,
+        th.description,
+        COUNT(mt.myth_id) AS myth_count
+      FROM themes th
+      LEFT JOIN myth_themes mt ON mt.theme_id = th.id
       GROUP BY th.id, th.name, th.slug, th.description
-      ORDER BY myth_count DESC, th.name;`);
+      ORDER BY myth_count DESC, th.name;
+    `);
+
     res.json(rows);
-  } catch (err) { res.status(500).json({ error: 'db error' }); }
+  } catch (err) {
+    console.error("❌ /api/themes error:", err);
+    console.error("Message:", err.message);
+    console.error("Code:", err.code);
+    console.error("Detail:", err.detail);
+    console.error("Hint:", err.hint);
+    console.error("Stack:", err.stack);
+
+    res.status(500).json({
+      error: "db error",
+      message: err.message,
+      code: err.code
+    });
+  }
 });
 app.get('/api/themes/:slug/myths', async (req, res) => {
   try {
