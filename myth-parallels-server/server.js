@@ -26,8 +26,20 @@ function makePoolConfig() {
   };
 }
 const pool = new Pool(makePoolConfig());
-pool.on('error', (err) => console.error('Unexpected PG client error', err));
 
+// Set the default schema for every new connection
+pool.on('connect', async (client) => {
+  try {
+    await client.query('SET search_path TO public');
+    console.log('✅ Search path set to public');
+  } catch (err) {
+    console.error('❌ Failed to set search_path:', err);
+  }
+});
+
+pool.on('error', (err) => {
+  console.error('Unexpected PG client error', err);
+});
 /* ---------------------- Express setup ---------------------- */
 const app = express();
 app.use(helmet());
