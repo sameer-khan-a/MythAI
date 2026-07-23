@@ -36,13 +36,13 @@ const VIDEOS = [
 const DOCS = [
   { title: "Myths & Monsters (2017) — Netflix", url: "https://www.netflix.com/title/80158649", avail: "Subscription" },
   { title: "The Power of Myth (1988) — Joseph Campbell & Bill Moyers", url: "https://billmoyers.com/series/joseph-campbell-and-the-power-of-myth-1988/", avail: "Available" },
-  { title: "Clash of the Gods (2009) — History Channel", url: "https://www.history.com/shows/clash-of-the-gods", avail: "Available" },
-  { title: "The Great Greek Myths (2015)", url: "https://en.wikipedia.org/wiki/The_Great_Greek_Myths", avail: "Available" },
-  { title: "Myth Hunters (2015)", url: "https://en.wikipedia.org/wiki/MythHunters", avail: "Available" },
+  { title: "Clash of the Gods (2009) — History Channel", url: "https://en.wikipedia.org/wiki/Clash_of_the_Gods_(TV_series)", avail: "Available" },
+  { title: "The Great Greek Myths (2015)", url: "https://www.arte.tv/en/videos/RC-014089/the-great-greek-myths/", avail: "Available" },
+  { title: "Myth Hunters (2015)", url: "https://www.imdb.com/title/tt4383318/", avail: "Available" },
   { title: "Ancient Apocalypse (2022) — Graham Hancock", url: "https://en.wikipedia.org/wiki/Ancient_Apocalypse", avail: "Available" },
   { title: "The Entire Story of Greek Mythology", url: "https://topdocumentaryfilms.com/entire-story-greek-mythology/", avail: "Available" },
-  { title: "Greece – Garden of the Gods (2005)", url: "https://archive.org/search.php?query=Garden%20of%20the%20Gods%20documentary%20Greece", avail: "Available" },
-  { title: "The Storyteller: Greek Myths (1997)", url: "https://en.wikipedia.org/wiki/The_Storyteller_(British_TV_series)", avail: "Available" },
+  { title: "Greece – Garden of the Gods (2005)", url: "https://www.imdb.com/find/?q=Greece%20Garden%20of%20the%20Gods", avail: "Available" },
+  { title: "The Storyteller: Greek Myths (1997)", url: "https://www.imdb.com/title/tt0092383/", avail: "Available" },
   { title: "Great Mythologies of the World (compilations)", url: "https://www.worldcat.org/search?q=Great+Mythologies+of+the+World", avail: "Limited access" }
 ];
 
