@@ -4,7 +4,7 @@
   display:grid;
   grid-template-columns:repeat(var(--cols,3),320px);
   justify-content:center;
-  gap:1rem;
+  gap:1.15rem;
   padding:1rem;
   margin:0 auto;
   max-width:1280px;
@@ -17,7 +17,6 @@
 @media (max-width:1100px){
   .chroma-grid{grid-template-columns:repeat(auto-fit,minmax(320px,320px));}
 }
-
 @media (max-width:600px){
   .chroma-grid{grid-template-columns:1fr;padding:.5rem;}
 }
@@ -28,31 +27,60 @@
   border-radius:22px;
   background:var(--card-gradient,#111827);
   border:1px solid rgba(255,255,255,.08);
-  transition:transform .45s cubic-bezier(.2,.8,.2,1),border-color .35s ease,box-shadow .45s ease;
+  transition:
+    transform .55s cubic-bezier(.22,.61,.36,1),
+    border-color .35s ease,
+    box-shadow .45s ease;
   --mouse-x:50%;
   --mouse-y:50%;
 }
 
 .chroma-card:hover{
-  transform:translateY(-8px) scale(1.02);
+  transform:translateY(-10px) scale(1.025);
   border-color:var(--card-border,#d4af37);
-  box-shadow:0 18px 40px rgba(0,0,0,.35),0 0 24px color-mix(in srgb,var(--card-border,#d4af37) 45%,transparent);
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.28),
+    0 28px 70px rgba(0,0,0,.45),
+    0 0 0 1px rgba(255,255,255,.05),
+    0 0 30px color-mix(in srgb,var(--card-border,#d4af37) 30%,transparent);
 }
 
 .chroma-card::before{
   content:"";
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at var(--mouse-x) var(--mouse-y),rgba(255,255,255,.22),transparent 60%);
+  background:radial-gradient(circle at var(--mouse-x) var(--mouse-y),
+      rgba(255,255,255,.08),transparent 72%);
   opacity:0;
-  transition:opacity .35s ease;
+  transition:.35s;
   z-index:2;
   pointer-events:none;
 }
 
-.chroma-card:hover::before{opacity:1;}
+.chroma-card::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1px;
+  background:linear-gradient(135deg,transparent,var(--card-border,#d4af37),transparent);
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;
+  mask-composite:exclude;
+  opacity:0;
+  transition:.45s;
+  pointer-events:none;
+}
+
+.chroma-card:hover::before,
+.chroma-card:hover::after{
+  opacity:1;
+}
 
 .chroma-img-wrapper{
+  position:relative;
   aspect-ratio:16/10;
   overflow:hidden;
 }
@@ -62,33 +90,71 @@
   height:100%;
   object-fit:cover;
   display:block;
-  filter:grayscale(1) contrast(.96) saturate(.9);
+  border-radius:18px 18px 0 0;
+  filter:grayscale(1) contrast(1.05) brightness(.92) saturate(.65);
   transition:transform .6s cubic-bezier(.22,.61,.36,1),filter .45s ease;
+}
+
+.chroma-img-wrapper::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(120deg,
+    transparent 20%,
+    rgba(255,255,255,.18) 50%,
+    transparent 80%);
+  transform:translateX(-150%);
+  transition:transform .8s ease;
+  pointer-events:none;
+}
+
+.chroma-card:hover .chroma-img-wrapper::after{
+  transform:translateX(150%);
 }
 
 .chroma-card:hover .chroma-img-wrapper img,
 .chroma-card:focus-visible .chroma-img-wrapper img{
   transform:scale(1.08);
-  filter:grayscale(0) contrast(1.05) saturate(1.1);
+  filter:grayscale(0) contrast(1.08) brightness(1) saturate(1.15);
 }
 
 .chroma-info{
-  padding:1rem;
-  color:#fff;
-  background:linear-gradient(to top,rgba(8,8,10,.95),rgba(8,8,10,.72),transparent);
   position:absolute;
-  left:0;
-  right:0;
-  bottom:0;
+  left:18px;
+  right:18px;
+  bottom:18px;
   z-index:5;
+  padding:1rem;
+  border-radius:18px;
+  color:#fff;
+  background:rgba(12,12,14,.62);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.08);
 }
 
-.chroma-info h3{margin:0;font-size:1.1rem;font-weight:700;}
-.handle{display:block;margin:.25rem 0;color:#d4af37;font-size:.8rem;}
-.role{margin:.35rem 0 0;color:#d1d5db;font-size:.9rem;line-height:1.45;}
+.chroma-info h3{
+  margin:0;
+  font-size:1.22rem;
+  font-weight:700;
+  letter-spacing:-.02em;
+}
 
-.chroma-overlay,
-.chroma-fade{
+.handle{
+  display:block;
+  margin:.3rem 0;
+  color:#d4af37;
+  font-size:.82rem;
+}
+
+.role{
+  margin:.35rem 0 0;
+  color:#d1d5db;
+  font-size:.9rem;
+  line-height:1.5;
+}
+
+.chroma-overlay,.chroma-fade{
   position:absolute;
   inset:0;
   pointer-events:none;
@@ -97,26 +163,28 @@
 .chroma-overlay{
   backdrop-filter:grayscale(1) brightness(.82);
   -webkit-backdrop-filter:grayscale(1) brightness(.82);
-  transition:backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease,opacity .45s ease;
-  mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
-  -webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
+  transition:.4s;
+  mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),
+    transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
+  -webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),
+    transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
 }
 
 .chroma-fade{
   backdrop-filter:grayscale(1) brightness(.82);
   -webkit-backdrop-filter:grayscale(1) brightness(.82);
   opacity:1;
-  transition:opacity .35s ease,backdrop-filter .35s ease,-webkit-backdrop-filter .35s ease;
-  mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
-  -webkit-mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
+  transition:.35s;
+  mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),
+    white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
+  -webkit-mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),
+    white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
 }
 
-/* Reveal full color while hovering the grid */
 .chroma-grid:hover .chroma-overlay{
   backdrop-filter:none;
   -webkit-backdrop-filter:none;
 }
-
 .chroma-grid:hover .chroma-fade{
   opacity:0;
   backdrop-filter:none;
@@ -129,11 +197,6 @@
   gap:0!important;
   max-width:none;
 }
-
-.chroma-grid.chroma-single .chroma-card{
-  width:100%;
-  border-radius:0;
-}
-
+.chroma-grid.chroma-single .chroma-card{width:100%;border-radius:0;}
 .chroma-grid.chroma-single .chroma-img-wrapper{aspect-ratio:auto;}
 .chroma-grid.chroma-single .chroma-img-wrapper img{height:100%;}
