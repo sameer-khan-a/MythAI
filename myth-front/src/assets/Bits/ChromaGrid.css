@@ -77,13 +77,16 @@
   height:100%;
   object-fit:cover;
   display:block;
+  filter:grayscale(1) contrast(.96) saturate(.9);
   transition:
-    transform .6s ease,
-    filter .35s ease;
+    transform .6s cubic-bezier(.22,.61,.36,1),
+    filter .45s ease;
 }
 
-.chroma-card:hover img{
+.chroma-card:hover .chroma-img-wrapper img,
+.chroma-card:focus-visible .chroma-img-wrapper img{
   transform:scale(1.08);
+  filter:grayscale(0) contrast(1.05) saturate(1.1);
 }
 
 .chroma-info{
@@ -131,20 +134,8 @@
 .chroma-overlay{
   backdrop-filter:grayscale(1) brightness(.82);
   -webkit-backdrop-filter:grayscale(1) brightness(.82);
-  mask-image:
-    radial-gradient(circle var(--r) at var(--x) var(--y),
-    transparent 0,
-    transparent 25%,
-    rgba(0,0,0,.2) 50%,
-    rgba(0,0,0,.5) 70%,
-    white 100%);
-  -webkit-mask-image:
-    radial-gradient(circle var(--r) at var(--x) var(--y),
-    transparent 0,
-    transparent 25%,
-    rgba(0,0,0,.2) 50%,
-    rgba(0,0,0,.5) 70%,
-    white 100%);
+  mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
+  -webkit-mask-image:radial-gradient(circle var(--r) at var(--x) var(--y),transparent 0,transparent 25%,rgba(0,0,0,.2) 50%,rgba(0,0,0,.5) 70%,white 100%);
 }
 
 .chroma-fade{
@@ -152,18 +143,8 @@
   -webkit-backdrop-filter:grayscale(1) brightness(.82);
   opacity:1;
   transition:opacity .25s ease;
-  mask-image:
-    radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),
-    white 0,
-    rgba(255,255,255,.9) 45%,
-    rgba(255,255,255,.45) 80%,
-    transparent 100%);
-  -webkit-mask-image:
-    radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),
-    white 0,
-    rgba(255,255,255,.9) 45%,
-    rgba(255,255,255,.45) 80%,
-    transparent 100%);
+  mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
+  -webkit-mask-image:radial-gradient(circle calc(var(--r)*2.5) at var(--x) var(--y),white 0,rgba(255,255,255,.9) 45%,rgba(255,255,255,.45) 80%,transparent 100%);
 }
 
 .chroma-grid.chroma-single{
