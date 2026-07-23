@@ -1,68 +1,58 @@
 # 🏛️ Myth AI
 
-<p align="center">
-  <img src="./Images/MythAI2.png" alt="Myth AI Banner">
-</p>
+> **An AI-powered mythology research platform for exploring, comparing, and understanding myths from civilizations around the world through explainable Natural Language Processing.**
 
 <p align="center">
-
-![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
-![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-336791?logo=postgresql)
-![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?logo=javascript)
-![License](https://img.shields.io/badge/License-MIT-green)
-
+  <img src="./Images/MythAI2.png" alt="Myth AI Hero">
 </p>
-
-> **An AI-powered mythology research platform that explores, compares, and connects myths from civilizations around the world using explainable Natural Language Processing.**
 
 ---
 
-# 🌍 Live Demo
+# 🌐 Experience Myth AI
 
-### 🚀 Frontend
+Ready to explore the world's greatest myths?
 
-https://myth-ai-three.vercel.app/
+## 🚀 Visit the Website
 
-### ⚙️ Backend API
+### https://myth-ai-three.vercel.app/
 
-https://mythai-backend.onrender.com/
+Discover mythologies, compare legendary narratives, and uncover fascinating connections between civilizations through AI-powered analysis.
 
 ---
 
 # 🏛️ Overview
 
-Myth AI is a full-stack web application built to make mythology research more interactive and data-driven.
+Myth AI is a full-stack web application designed to make mythology exploration more interactive, engaging, and research-driven.
 
-Instead of treating myths as isolated stories, the platform applies **Natural Language Processing (NLP)** to uncover similarities between narratives from different cultures. Using **TF-IDF** and **Cosine Similarity**, Myth AI recommends related myths based on shared themes, vocabulary, and storytelling patterns.
+Rather than presenting myths as isolated stories, the platform uses **Natural Language Processing (NLP)** to discover similarities between narratives from different civilizations. By leveraging **TF-IDF** and **Cosine Similarity**, Myth AI identifies recurring themes, shared archetypes, and cross-cultural storytelling patterns.
 
-Designed for students, educators, researchers, and mythology enthusiasts, the platform combines historical content with explainable AI to create a modern mythology exploration experience.
+Whether you're a student, researcher, educator, or mythology enthusiast, Myth AI provides a modern and intuitive way to explore the stories that shaped civilizations across the globe.
 
 ---
 
 # ✨ Features
 
-- 🌍 Explore myths from multiple civilizations
+- 🌍 Explore mythologies from civilizations around the world
 - 🤖 AI-powered mythology comparison
-- 🧠 TF-IDF recommendation engine
-- 📖 Detailed mythology pages
-- 🔎 Theme and narrative discovery
+- 🧠 TF-IDF & Cosine Similarity recommendation engine
+- 📖 Detailed mythology exploration pages
+- 🔎 Discover recurring themes and narrative parallels
 - 📚 Human-curated mythology database
-- ⚡ Fast React interface
-- 📱 Responsive design
-- ☁️ Cloud deployment
-- 🎨 Modern UI/UX
+- ⚡ Fast and responsive interface
+- 📱 Fully responsive across devices
+- 🎨 Modern and intuitive user experience
+- ☁️ Cloud deployed application
 
 ---
 
-# 🛠 Tech Stack
+# 🚀 Tech Stack
 
 | Category | Technologies |
-|------------|-------------|
+|-----------|--------------|
 | Frontend | React |
 | Backend | Node.js, Express.js |
 | Database | PostgreSQL |
-| NLP | Natural (TF-IDF & Cosine Similarity) |
+| NLP Engine | Natural (TF-IDF & Cosine Similarity) |
 | Routing | React Router |
 | Styling | Bootstrap 5, CSS3 |
 | Deployment | Vercel, Render |
@@ -70,31 +60,10 @@ Designed for students, educators, researchers, and mythology enthusiasts, the pl
 
 ---
 
-# 🧠 AI Pipeline
-
-```
-User Search
-      │
-      ▼
-Preprocessed Myth Text
-      │
-      ▼
-TF-IDF Vectorization
-      │
-      ▼
-Cosine Similarity
-      │
-      ▼
-Related Myth Recommendations
-```
-
----
-
 # 📂 Project Structure
 
 ```text
 MythAI
-│
 ├── backend
 │   ├── controllers
 │   ├── routes
@@ -112,27 +81,27 @@ MythAI
 
 ---
 
-# ⚙️ Installation
+# ⚡ Getting Started
 
-Clone the repository
+### Clone the repository
 
 ```bash
 git clone https://github.com/sameer-khan-a/MythAI.git
 ```
 
-Move into the project
+### Navigate into the project
 
 ```bash
 cd MythAI
 ```
 
-Install dependencies
+### Install dependencies
 
 ```bash
 npm install
 ```
 
-Start the backend
+### Start the development server
 
 ```bash
 npx nodemon server.js
@@ -140,12 +109,6 @@ npx nodemon server.js
 # or
 
 node server.js
-```
-
-Start the frontend
-
-```bash
-npm start
 ```
 
 ---
@@ -182,39 +145,36 @@ npm start
 
 ---
 
-# 🗺 Roadmap
+# 🛣️ Roadmap
 
-- ✅ Myth exploration platform
-- ✅ AI similarity engine
-- ✅ TF-IDF analysis
-- ✅ Cosine similarity recommendations
-- ✅ PostgreSQL integration
-- ✅ Responsive UI
-- ✅ Cloud deployment
-- ⬜ User authentication
-- ⬜ Bookmarks
-- ⬜ Advanced search filters
-- ⬜ Research dashboard
+- [x] Myth exploration platform
+- [x] AI-powered similarity engine
+- [x] TF-IDF & Cosine Similarity analysis
+- [x] Responsive interface
+- [x] Cloud deployment
+- [ ] User authentication
+- [ ] Research dashboard
+- [ ] Advanced search filters
+- [ ] Bookmark and save myths
 
 ---
 
 # 💡 Why Myth AI?
 
-Most mythology platforms function as static encyclopedias.
+Most mythology websites function as digital encyclopedias, presenting stories independently. Myth AI takes a different approach by combining mythology with explainable Artificial Intelligence to uncover meaningful relationships between narratives across cultures.
 
-Myth AI transforms mythology into an interactive research experience by combining curated historical knowledge with explainable Natural Language Processing. Instead of simply reading myths, users can discover recurring archetypes, shared motifs, and cross-cultural connections through AI-assisted exploration.
+Through Natural Language Processing, users can discover recurring archetypes, shared motifs, and fascinating connections between civilizations, transforming mythology into an interactive research experience.
 
 ---
 
 # 🤝 Contributing
 
-Contributions are welcome.
+Contributions, suggestions, and improvements are always welcome.
 
 1. Fork the repository.
 2. Create a feature branch.
 3. Commit your changes.
-4. Push to your branch.
-5. Open a Pull Request.
+4. Open a Pull Request.
 
 ---
 
@@ -222,12 +182,4 @@ Contributions are welcome.
 
 **Sameer Khan**
 
-- 🌐 Portfolio: *(Add after portfolio is live)*
-- 💼 LinkedIn: *(Add your LinkedIn URL)*
-- 📧 Email: *(Add your email)*
-
----
-
-## ⭐ Support
-
-If you enjoyed this project, consider giving it a ⭐ on GitHub. It helps others discover the project and supports future development.
+If you found this project interesting, consider giving it a ⭐ on GitHub. Your support helps improve and grow the project.
