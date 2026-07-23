@@ -7,7 +7,7 @@ const menuItems = [
   { label: "Home", link: "/", ariaLabel: "Return to the beginning" },
   { label: "About", link: "/about", ariaLabel: "Discover who we are and why myths matter" },
   { label: "Archive", link: "/archive", ariaLabel: "Explore the library of myth essays and motifs" },
-  { label: "Contact", link: "/contact", ariaLabel: "Reach out and share your thoughts" }
+
 ];
 
 export default function Navbar() {
